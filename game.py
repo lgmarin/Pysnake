@@ -3,15 +3,10 @@ Pysnake - Yet Another PyGame Snake Clone
 
 This is just a simple project to familiarize myself with pygame.
 
-I also intend to remember the usage of GIT, pythonics best practices,
-and overall python development.
+I also intend to remember the usage of GIT and overall python development and best practices.
 
 Luiz Marin
 """
-
-from re import X
-from signal import pthread_kill
-from turtle import width
 import pygame
 import time
 import random
@@ -119,6 +114,15 @@ def game():
         snake.draw()
 
         pygame.display.update()
+
+        # Verify if the snake is coliding with food
+        if snake.x == food_x and snake.y == food_y:
+            # Create more food, for the hungry snake
+            food_x = round(random.randrange(0,max_x - snake.size) / 10.0) * 10.0
+            food_y = round(random.randrange(0,max_y - snake.size) / 10.0) * 10.0
+            snake_length += 1
+
+        clock.tick(snake.speed)
         
     pygame.quit()
     quit()
