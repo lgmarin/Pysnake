@@ -24,6 +24,10 @@ black = (0,0,0)
 red = (255,0,0)
 orange = (255,165,0)
 
+# Set fonts for the game score and messages
+message_font = pygame.font.SysFont('comicsans', 30)
+score_font = pygame.font.SysFont('comicsans', 25)
+
 
 class Snake(object):
     def __init__(self, x, y, size, speed):
@@ -55,10 +59,18 @@ class Snake(object):
         for pixel in self.pixels:
             pygame.draw.rect(game_screen, white, [pixel[0], pixel[1], self.size, self.size])
 
+def drawScore(score):
+    """
+    Draw Score on the screen
+    """
+    text =  score_font.render("Score: " + str(score), True, orange)
+    game_screen.blit(text, [0,0])
+
 
 def game():
 
     game_over = False
+    game_closed = False
 
     # Define screeen boundaries and starting point
     max_x, max_y = screen_size
@@ -74,12 +86,25 @@ def game():
     food_x = round(random.randrange(0, max_x - snake.size) / 10) * 10
     food_y = round(random.randrange(0, max_y - snake.size) / 10) * 10
 
-    while not game_over:
+    while not game_closed:
 
+        while game_over:
+            clock.tick(snake.speed)
+
+            game_screen.fill(black)
+            game_over_msg = message_font.render("Game Over!", True, red)
+            game_screen.blit(game_over_msg, [max_x/3, max_y/3])
+            pygame.display.update()
+
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    quit()
+            
          # Prepare Pygame events for keystrokes
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
-                game_over = True
+                game_closed = True
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_LEFT:
                     x_speed = -snake.size
@@ -112,6 +137,7 @@ def game():
             game_over == True
 
         snake.draw()
+        drawScore(snake_length - 1)
 
         pygame.display.update()
 
