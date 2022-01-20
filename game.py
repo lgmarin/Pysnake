@@ -13,20 +13,17 @@ import random
 
 # Set basic PyGame initialization variables
 pygame.init()
-screen_size = (600, 400)
-game_screen = pygame.display.set_mode(screen_size)
+SCREEN_SIZE = (600, 400)
+game_screen = pygame.display.set_mode(SCREEN_SIZE)
 pygame.display.set_caption("PySnake")
 clock = pygame.time.Clock()
 
 # Define basic colors to be used later
-white = (255,255,255)
-black = (0,0,0)
-red = (255,0,0)
-orange = (255,165,0)
-
-# Set fonts for the game score and messages
+WHITE = (255,255,255)
+BLACK = (0,0,0)
+RED = (255,0,0)
+ORANGE = (255,165,0)
 message_font = pygame.font.SysFont('comicsans', 30)
-score_font = pygame.font.SysFont('comicsans', 25)
 
 
 class Snake(object):
@@ -40,8 +37,9 @@ class Snake(object):
         
 
     def move(self, length):
-        # Move the snake by creating another pixel at front
-        # If not eaten, then destroy last pixel
+        """ Move the snake by creating another pixel in front of it
+            and then destroying the last pixel.
+        """
         self.pixels.append([self.x, self.y])
         if len(self.pixels) > length:
             del self.pixels[0]
@@ -52,19 +50,29 @@ class Snake(object):
                 self.isAlive = False
 
     def isAlive(self):
+        """ Verify if the snake is still alive.
+        """
         if self.isAlive == False:
             return False
 
     def draw(self):
+        """ Draw the snake on the screen.
+        """
         for pixel in self.pixels:
-            pygame.draw.rect(game_screen, white, [pixel[0], pixel[1], self.size, self.size])
+            pygame.draw.rect(game_screen, WHITE, [pixel[0], pixel[1], self.size, self.size])
 
-def drawScore(score):
-    """
-    Draw Score on the screen
-    """
-    text =  score_font.render("Score: " + str(score), True, orange)
-    game_screen.blit(text, [0,0])
+
+class Score(object):
+    def __init__(self, font, color):
+        self.font = font
+        self.color = color
+
+    def draw(self, score):
+        """
+        Draw Score on the screen
+        """
+        text = self.font.render("Score: " + str(score), True, self.color)
+        game_screen.blit(text, [0,0])
 
 
 def game():
@@ -73,7 +81,7 @@ def game():
     game_closed = False
 
     # Define screeen boundaries and starting point
-    max_x, max_y = screen_size
+    max_x, max_y = SCREEN_SIZE
     x_speed = 0
     y_speed = 0
     Snake.pixels = []
@@ -81,6 +89,9 @@ def game():
 
     #Create snake (x_pos, y_pos, size, speed)
     snake = Snake(max_x/2, max_y/2, 10, 8)
+
+    #Create score object (font, color )
+    score = Score(pygame.font.SysFont('comicsans', 25), ORANGE)
 
     # Random food position
     food_x = round(random.randrange(0, max_x - snake.size) / 10) * 10
@@ -91,8 +102,8 @@ def game():
         while game_over:
             clock.tick(snake.speed)
 
-            game_screen.fill(black)
-            game_over_msg = message_font.render("Game Over!", True, red)
+            game_screen.fill(BLACK)
+            game_over_msg = message_font.render("Game Over!", True, RED)
             game_screen.blit(game_over_msg, [max_x/3, max_y/3])
             pygame.display.update()
 
@@ -128,8 +139,8 @@ def game():
         snake.y += y_speed
 
         # Set background and draw food
-        game_screen.fill(black)
-        pygame.draw.rect(game_screen, orange, [food_x, food_y, snake.size, snake.size])
+        game_screen.fill(BLACK)
+        pygame.draw.rect(game_screen, ORANGE, [food_x, food_y, snake.size, snake.size])
 
         #Move Snake and verify if it have eaten it's own tail
         snake.move(snake_length)
@@ -137,15 +148,16 @@ def game():
             game_over == True
 
         snake.draw()
-        drawScore(snake_length - 1)
+
+        score.draw(snake_length - 1)
 
         pygame.display.update()
 
         # Verify if the snake is coliding with food
         if snake.x == food_x and snake.y == food_y:
             # Create more food, for the hungry snake
-            food_x = round(random.randrange(0,max_x - snake.size) / 10.0) * 10.0
-            food_y = round(random.randrange(0,max_y - snake.size) / 10.0) * 10.0
+            food_x = round(random.randrange(0, max_x - snake.size) / 10.0) * 10.0
+            food_y = round(random.randrange(0, max_y - snake.size) / 10.0) * 10.0
             snake_length += 1
 
         clock.tick(snake.speed)

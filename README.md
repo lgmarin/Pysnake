@@ -16,3 +16,7 @@ Use of a python library to develop a basic game with the objective to learn and 
 * Improve the readability of some documentations
 * Usage of Git and GitHub
 
+## Dependencies
+
+* pygame - pip install pygame
+
