@@ -18,5 +18,7 @@ Use of a python library to develop a basic game with the objective to learn and 
 
 ## Dependencies
 
-* pygame - pip install pygame
+* pygame
+
+    pip install pygame
 
